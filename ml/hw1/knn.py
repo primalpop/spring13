@@ -1,5 +1,3 @@
-
-import itertools
 import pdb
 
 def hamming_distance(s1, s2):
@@ -54,9 +52,6 @@ def main(filename):
 	k = train(trainset)	
 	print k
 	test(trainset, testset, k)
-
-
-
 
 if __name__ == "__main__":
 	main('mintest.txt')
