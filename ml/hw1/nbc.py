@@ -1,4 +1,14 @@
-import pdb
+#!/usr/bin/env python
+"""
+@Author: Primal Pappachan
+@email: primal1@umbc.edu
+Naive Bayes Classifier
+Dataset used: Mushroom dataset from UCI ML repository
+http://archive.ics.uci.edu/ml/machine-learning-databases/mushroom/agaricus-lepiota.data
+Accuracy of the Classifier:  0.95
+Parameters estimated by NB: printout attached
+Predicted class probabilities: printout attached
+"""
 import random
 
 class AutoVivification(dict):
@@ -24,21 +34,41 @@ def add_attribute(a, category, attr, value):
 	return a
 
 def cond_probability(a, category, attr, value, categories):
+#	pdb.set_trace()
 	if a[category][attr].has_key(value):
 		x = a[category][attr][value] + 1
 	else: x = 1	
-	return x/float(categories[category]+sum(categories.values()))	
+	return x/float(categories[category] + len(a[category][attr].values()))
+
+def estimate_parameters(categories, a):
+	#Function to estimate parameters
+	for c in categories.keys(): #cat
+	#	print a
+		for i in xrange(0, 22): #attr;
+			for v in xrange(len(a[c][i].values())): #value
+				print "%s;%d;%s;%f" %(c, i, a[c][i].keys()[v], cond_probability(a, c, i, v, categories))
+
+def partition_set(instances):
+	#Function to enforce similar class distribution
+	ed, po = [], []
+	for i in xrange(len(instances)):
+   		if instances[i][0] == 'e':
+			ed.append(instances[i])
+		else: po.append(instances[i])
+	random.shuffle(ed)
+	random.shuffle(po)
+	edsplit, posplit = int((2/3.0) * len(ed)), int((2/3.0) * len(po))
+	trainset = ed[:edsplit] + po[:posplit]
+	testset = ed[edsplit:] + po[posplit:]	
+	return trainset, testset	
+
 
 def main(filename):
 	instances = open(filename).read().splitlines()
-	random.shuffle(instances) #Randomizes the instances so as to improve distribution
-	split = int((2/3.0) * len(instances)) #Split of 2/3 and 1/3
-	trainset = instances[:split]
-	testset = instances[split:]	
+	trainset, testset = partition_set(instances)
 	categories = dict()
 	a = AutoVivification() #data-store for [category][attribute][value] counts
 	flag = True #flag to check if attribute has been added once
-	
 	for t in trainset:
 		sample = t.split(',')		
 		category, attributes = sample[0], sample[1:] #First element of instance = category, Rest = Attributes
@@ -51,11 +81,10 @@ def main(filename):
 				a = add_attribute(a, category, i, value)				
 		flag = False
 
-#	print categories, a
+
 	p = e = acc = 0
 	for t in testset:
 		sample = t.split(',')
-	#	print sample	
 		label, attributes = sample[0], sample[1:]
 		max = 0.0
 		for k in categories.keys():
@@ -63,19 +92,13 @@ def main(filename):
 			for i in range(len(attributes)):
 				value = attributes[i]
 				product *= cond_probability(a, k, i, value, categories) 
-	#		print product * categories[k], k
-	#		print "max", max
-			arg = product * (categories[k]/float(split))
+			arg = product * (categories[k]/float(len(trainset)))
 			if arg > max: 
 				max = arg
-				predicted = k
-		#	print "max", max	
-		#print "predicted", predicted		
-		if predicted == 'e': e+=1 
-		else: p+=1						
-		if predicted == label: acc+= 1	
-	print e, p 	 		
+				predicted = k							
+		if predicted == label: acc+= 1
+ 		
 	print acc/float(len(testset))
 
 if __name__ == "__main__":
-	main('testfile.txt')
+	main('agaricus-lepiota.data')
