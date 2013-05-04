@@ -1,0 +1,71 @@
+
+
+3. Are the data linearly seperable data? Describe how you used SVMlight to determine this?
+
+a. All the attributes are continous
+b. Attribute values are normalized and in the range [0,1]
+
+
+First run
+
+./svm_learn ../train-ionosphere.data ../model
+
+Training
+--------
+Setting default regularization parameter C=0.0896
+Optimization finished (68 misclassified, maxdiff=0.00078).
+
+./svm_classify ../test-ionosphere.data ../model
+
+Testing
+-------
+Accuracy on test set: 50.43% (59 correct, 58 incorrect, 117 total)
+
+Data is not linearly seperable as large number of instances in the training data set are misclassified which means they are on the wrong side of the seperating hyperplane. This is reflected in training as well as only 50% of the instances are classified correctly which is as bad as random guess. Also the number of support vectors are really large which means 
+
+
+http://stackoverflow.com/questions/9480605/what-is-the-relation-between-the-number-of-support-vectors-and-training-data-and
+
+Linear kernel
+-------------
+
+./svm_learn -t 0 ../train-ionosphere.data ../poly-model
+
+Number of SV: 148
+Norm of weight vector: |w|=0.47461
+
+
+Compare the performance of the SVM using each of the following kernels - linear, polynomial,
+radial basis. The polynomial and radial basis kernels each take parameters. Experiment with
+various values of these parameters and C, which controls the tradeoﬀ between training error and
+margin. Write a short report detailing your experiments. Be sure to report the margin and
+number of support vectors for various settings of the parameters. What kernel performed the
+best? What does this say, if anything, about the data?
+
+
+The performance of SVM was compared using the following kernels
+
+- linear
+- polynomial
+- radial basis
+
+The results are in the following table. The radial basis kernel gives the highest accuracy among the three. RBF is based on guassian distribution and is equivalent to mapping the instances to a large dimensional space with the sigmoid function. This allows to circle instances in the dimension space and allow better classification for a non-linear function. With increasing gamma, the accuracy of RBF was found to go up. This is because an RBF with large gamma will give a smoother decision boundary. [1] http://svr-www.eng.cam.ac.uk/~kkc21/thesis_main/node31.html
+
+Polynomial Kernel
+
+When d = 1, it is equivalent to linear kernel and accuracy of both linear kernel and polynomial kernel with d = 1 was found to be identical. Further on increasing, d the accuracy was found to go up this shows that the data is not linearly seperable and non-linear polynomial kernels fit the function more accurately. The size of the margin also increased with larger values of d, so it means that the polynomial kernel with higher dimensions is able to find higher margins between the classes which in turns increases the testing accuracy by improving generalization. 
+
+With increasing values of r(coefficient0), the accuracy of SVM went down and also the size of margin decreased. This maybe because higher values of r, increase the effect of linear parameters in the function and bring down the effect of function being non-linear. With having tried out small variations of r, the change in accuracy was found to be very less.
+
+
+Radial Basis Kernel
+
+As mentioned earlier, RBF kernel gives the highest accuracy among the 3 kernels. Also with increasing values of gamma, the accuracy was found to go up. This is because with large values of gamma(g) the gaussian kernel is less flexible and thus avoid overfitting in the training data. This results in improvement of accuracy of SVM in the testing set. 
+
+Varying c which is the slack parameter for SVM is independent of the kernel. Larger C means we only allow small slack and there will be less overfit. Smaller C means we allow more slack and the number of support vectors will increase. 
+
+
+It determines the tradeoff between a wide margin and classifier error. Large C means you are allowing little slack and the model will fit tighter to your data, small C means you are allowing a lot of slack and the model will have more error on the training set, but be less sensitive to noise.
+
+
+

@@ -1,0 +1,16 @@
+Dual perceptron algorithm
+
+α is a vector of size N, i.e number of training examples.
+
+Perceptron Learning Algorithm(PLA) is used in the classification of linearly seperable data. In online version of PLA, if the class label is wrong, the weight vector is pushed towards or away from training sample x_i depending on whether label is positive or negative. The intuition is that, if it is misclassified the sample lies on the wrong side of the line/plane(classifier). So by substracting or adding x_i(sample) to the weight vector, the line is moved towards the sample until it is correctly classified.
+
+The other version of Perceptron learning algorithm which is the Dual PLA given in the question use the weight vector as the summation of α_l*x_l*y_l for l = 1 to N. That is the weight vector in PLA is a linear combination of the training samples.  Therefore estimating α_i is equivalent to computing w[1]. The required values x_t * w can be calculated by 
+
+	summation formula from [1]
+
+
+Therefore
+
+Here α_i denotes the number of times a training sample x_i has been misclassified. Therefore for data which is easier to classify will have low α and which are difficult to be classified will have high α as it will be misclassified more number of times. So from the weight vector being used in Dual PLA it shows that training samples which are classified more times were given higher priority over the ones with lower α as the former has more information about the distribution.
+
+Compared to the earlier version of PLA, this one finds a linear seperator among the points and also information about the content of training samples. Therefore it is much more expressive but the computation of the α vector can be expensive with large size of training set. 
